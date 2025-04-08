@@ -1,0 +1,139 @@
+✅ 1. Built-in CI/CD: GitHub Actions
+GitHub Actions allows you to automate workflows like building, testing, and deploying applications.
+
+🔧 Example: CI pipeline for a Node.js app
+yaml
+
+# .github/workflows/nodejs.yml
+name: Node.js CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - run: npm install
+    - run: npm test
+✅ Triggers on every push/pull request to main, installs dependencies, and runs tests.
+
+  
+
+✅ 2. Pull Requests: Review and Merge Changes
+Pull Requests (PRs) are used to:
+
+Propose code changes
+
+Get peer reviews
+
+Run automated tests before merging
+
+🔧 Example: Workflow
+Dev creates a feature branch: git checkout -b feature/login-api
+
+Pushes code: git push origin feature/login-api
+
+Creates PR on GitHub: Reviewers get notified
+
+GitHub Actions run tests automatically
+
+After approval, it's merged into main
+
+🔁 Ensures clean code, peer review, and no broken features in main.
+
+  
+
+✅ 3. Webhooks: Trigger Events Like Jenkins/Slack
+Webhooks send HTTP POST payloads to a URL when something happens in the repo.
+
+🔧 Example: Jenkins CI Trigger from GitHub
+In GitHub:
+
+Go to your repo → Settings → Webhooks → Add Webhook
+
+URL: http://<your-jenkins-url>/github-webhook/
+
+Content type: application/json
+
+Trigger: Push events
+
+In Jenkins:
+
+Create a Jenkins pipeline job
+
+Enable “GitHub hook trigger for GITScm polling”
+
+✅ Now, whenever you push to GitHub, Jenkins gets triggered automatically.
+
+🔧 Example: Slack Notification Webhook
+In Slack: Create an Incoming Webhook URL
+
+In GitHub Actions:
+
+yaml
+Copy
+Edit
+- name: Slack Notify
+  uses: slackapi/slack-github-action@v1.23.0
+  with:
+    payload: |
+      {
+        "text": "✅ CI Passed for ${{ github.repository }} on commit ${{ github.sha }}"
+      }
+  env:
+    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+✅ 4. Integration with Other Tools
+🔧 Jira Integration
+Link GitHub commits/issues to Jira tickets
+
+Example commit message:
+git commit -m "JIRA-123: Fixed login redirect bug"
+
+If Jira + GitHub are connected (via GitHub Marketplace or Jira Cloud), this will link your PR/commit directly to the Jira ticket.
+
+🔧 Jenkins Integration
+Use GitHub repo as source in Jenkins job
+
+Add Jenkins GitHub plugin
+
+Enable GitHub webhook triggers as above
+
+🔧 VS Code Integration
+Install GitHub extension in VS Code
+
+You can:
+
+Clone/push/pull from GitHub
+
+Create & review pull requests inside the editor
+
+Use GitHub Copilot for code suggestions
+
+# 🔧 Terraform Integration
+Store your .tf files in GitHub
+
+Use GitHub Actions to run Terraform:
+
+
+- name: Terraform Init
+  run: terraform init
+
+- name: Terraform Plan
+  run: terraform plan
+
+- name: Terraform Apply
+  if: github.ref == 'refs/heads/main'
+  run: terraform apply -auto-approve
+✅ Full GitOps workflow: Infra changes go through PR + review + automation!
